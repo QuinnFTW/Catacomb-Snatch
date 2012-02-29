@@ -9,6 +9,7 @@ import com.mojang.mojam.Options;
 import com.mojang.mojam.entity.animation.SmokePuffAnimation;
 import com.mojang.mojam.entity.building.Building;
 import com.mojang.mojam.entity.building.Harvester;
+import com.mojang.mojam.entity.building.RailCart;
 import com.mojang.mojam.entity.building.Turret;
 import com.mojang.mojam.entity.loot.Loot;
 import com.mojang.mojam.entity.loot.LootCollector;
@@ -21,6 +22,7 @@ import com.mojang.mojam.entity.weapon.Rifle;
 import com.mojang.mojam.gui.Notifications;
 import com.mojang.mojam.level.tile.RailTile;
 import com.mojang.mojam.level.tile.Tile;
+import com.mojang.mojam.level.tile.UnbreakableRailTile;
 import com.mojang.mojam.math.Vec2;
 import com.mojang.mojam.network.TurnSynchronizer;
 import com.mojang.mojam.screen.Art;
@@ -35,7 +37,12 @@ public class Player extends Mob implements LootCollector {
     public static int COST_RAIL;
     public static int COST_DROID;
     public static int COST_REMOVE_RAIL;
+<<<<<<< HEAD
     public int REGEN_INTERVAL = 60 * 3;
+=======
+    public static int RAIL_MODE;
+    public static final int REGEN_INTERVAL = 60 * 3;
+>>>>>>> upstream/feature/railEntities
     public int plevel;
     public double pexp;
     public double psprint;
@@ -76,6 +83,8 @@ public class Player extends Mob implements LootCollector {
     private int regenDelay = 0;
     boolean isImmortal;
     private int characterID;
+    private RailCart ridingCart;
+    boolean canEject = false;
 
     /**
      * Constructor
@@ -190,7 +199,7 @@ public class Player extends Mob implements LootCollector {
         handleLevelUp();
         flashMiniMapIcon();
         countdownTimers();
-        playStepSound();
+        if (!inCart()) playStepSound();
 
         double xa = 0;
         double ya = 0;
@@ -199,32 +208,36 @@ public class Player extends Mob implements LootCollector {
 
         // Handle keys
         if (!dead) {
-            if (keys.up.isDown) {
+            if (keys.up.isDown && !inCart()) {
                 ya--;
             }
-            if (keys.down.isDown) {
+            if (keys.down.isDown && !inCart()) {
                 ya++;
             }
-            if (keys.left.isDown) {
+            if (keys.left.isDown && !inCart()) {
                 xa--;
             }
-            if (keys.right.isDown) {
+            if (keys.right.isDown && !inCart()) {
                 xa++;
             }
-            if (keys.right.isDown) {
-                xa++;
+            if (!keys.use.isDown && inCart()) {
+                canEject = true;
+            }
+            if (keys.use.isDown && inCart() && canEject) {
+                ejectCart();
+                canEject = false;
             }
             if (keys.fireUp.isDown) {
-                yaShot--;
+            	if (!inCart())yaShot--;
             }
             if (keys.fireDown.isDown) {
-                yaShot++;
+            	if (!inCart())yaShot++;
             }
             if (keys.fireLeft.isDown) {
-                xaShot--;
+            	if (!inCart())xaShot--;
             }
             if (keys.fireRight.isDown) {
-                xaShot++;
+            	if (!inCart())xaShot++;
             }
         }
 
@@ -241,22 +254,27 @@ public class Player extends Mob implements LootCollector {
             updateFacing();
         }
 
-        // Move player if it is not standing still
-        if (xa != 0 || ya != 0) {
+        // Move player if it is not standing still and not in cart .
+        if ((xa != 0 || ya != 0 ) && !inCart()) {
             handleMovement(xa, ya);
+        }
+        
+        // Move player if it is in cart .
+        if (inCart()) {
+        	pos.x = ridingCart.pos.x;
+        	pos.y = ridingCart.pos.y;
         }
 
         if (freezeTime > 0) {
-            move(xBump, yBump);
+        	if (!inCart())move(xBump, yBump);
         } else {
-            move(xd + xBump, yd + yBump);
-
+        	if (!inCart())move(xd + xBump, yd + yBump);
         }
         
-        xd *= 0.4;
-        yd *= 0.4;
-        xBump *= 0.8;
-        yBump *= 0.8;
+        if (!inCart())xd *= 0.4;
+        if (!inCart())yd *= 0.4;
+        if (!inCart())xBump *= 0.8;
+        if (!inCart())yBump *= 0.8;
         muzzleImage = (muzzleImage + 1) & 3;
 
         handleWeaponFire(xa, ya);
@@ -275,7 +293,12 @@ public class Player extends Mob implements LootCollector {
             revive();
         }
 
+        if (keys.build.isDown && keys.build.wasDown) {
+            handleRailBuilding(x, y, RAIL_MODE);
+        }
+        
         if (keys.build.isDown && !keys.build.wasDown) {
+        	  RAIL_MODE = 0;
             handleRailBuilding(x, y);
         }
 
@@ -473,12 +496,13 @@ public class Player extends Mob implements LootCollector {
      * @param ya Position change on the y axis
      */
     private void handleRailBuilding(int x, int y) {
-
         if (level.getTile(x, y).isBuildable()) {
             if (score >= COST_RAIL && time - lastRailTick >= RailDelayTicks) {
                 lastRailTick = time;
                 level.placeTile(x, y, new RailTile(level.getTile(x, y)), this);
                 payCost(COST_RAIL);
+                MojamComponent.soundPlayer.playSound("/sound/Track Place.wav", (float) pos.x, (float) pos.y);
+                RAIL_MODE = 1;
             } else if (score < COST_RAIL) {
             	if(this.team == MojamComponent.localTeam) {
             		  Notifications.getInstance().add(MojamComponent.texts.buildRail(COST_RAIL));
@@ -486,10 +510,11 @@ public class Player extends Mob implements LootCollector {
               
             }
         } else if (level.getTile(x, y) instanceof RailTile) {
-            if ((y < 8 && team == Team.Team2) || (y > level.height - 9 && team == Team.Team1)) {
+            if ((y < 9 && team == Team.Team2) || (y > level.height - 10 && team == Team.Team1)) {
                 if (score >= COST_DROID) {
                     level.addEntity(new RailDroid(pos.x, pos.y, team));
                     payCost(COST_DROID);
+                    MojamComponent.soundPlayer.playSound("/sound/Track Place.wav", (float) pos.x, (float) pos.y);
                 } else {
                 	if(this.team == MojamComponent.localTeam) {
                 		Notifications.getInstance().add(MojamComponent.texts.buildDroid(COST_DROID));
@@ -501,13 +526,54 @@ public class Player extends Mob implements LootCollector {
                     lastRailTick = time;
                     if (((RailTile) level.getTile(x, y)).remove()) {
                         payCost(COST_REMOVE_RAIL);
+                        MojamComponent.soundPlayer.playSound("/sound/Track Place.wav", (float) pos.x, (float) pos.y);
+                        RAIL_MODE = 2;
                     }
                 } else if (score < COST_REMOVE_RAIL) {
                 	if(this.team == MojamComponent.localTeam) {
                 		Notifications.getInstance().add(MojamComponent.texts.removeRail(COST_REMOVE_RAIL));
                 	}
                 }
+            }
+        }
+    }
+    
+    /**
+     * Handle rail building while holding down key or externally with mode
+     * 
+     * @param xa Position change on the x axis
+     * @param ya Position change on the y axis
+     * @param mode Mode to change to , 1 is add , 2 is remove
+     */
+    private void handleRailBuilding(int x, int y, int mode) {
+
+        if (level.getTile(x, y).isBuildable() && !(level.getTile(x, y) instanceof RailTile) && mode == 1) {
+            if (score >= COST_RAIL && time - lastRailTick >= RailDelayTicks) {
+                lastRailTick = time;
+                level.placeTile(x, y, new RailTile(level.getTile(x, y)), this);
+                payCost(COST_RAIL);
                 MojamComponent.soundPlayer.playSound("/sound/Track Place.wav", (float) pos.x, (float) pos.y);
+            } else if (score < COST_RAIL) {
+            	RAIL_MODE = 0;
+            	if(this.team == MojamComponent.localTeam) {
+            		  Notifications.getInstance().add(MojamComponent.texts.buildRail(COST_RAIL));
+            	}
+              
+            }
+        } else if (level.getTile(x, y) instanceof RailTile && !(level.getTile(x, y) instanceof UnbreakableRailTile) && mode == 2) {
+            if (!(y < 9 && team == Team.Team2) || (y > level.height - 10 && team == Team.Team1) && mode == 2) {
+                if (score >= COST_REMOVE_RAIL && time - lastRailTick >= RailDelayTicks) {
+                    if (((RailTile) level.getTile(x, y)).remove()) {
+                      	lastRailTick = time;
+                        payCost(COST_REMOVE_RAIL);
+                        MojamComponent.soundPlayer.playSound("/sound/Track Place.wav", (float) pos.x, (float) pos.y);
+                    }
+                } else if (score < COST_REMOVE_RAIL) {
+                	RAIL_MODE = 0;
+                	if(this.team == MojamComponent.localTeam) {
+                		Notifications.getInstance().add(MojamComponent.texts.removeRail(COST_REMOVE_RAIL));
+                	}
+                }
             }
         }
     }
@@ -631,6 +697,20 @@ public class Player extends Mob implements LootCollector {
             // don't draw anything if we are dead (in a hole)
             return;
         }
+        
+        //TODO Do proper drawing
+        
+        if (inCart()) {
+      		if (ridingCart.lDir == RailCart.Direction.LEFT)
+      			screen.blit(Art.railcart2[1][1], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.UP)
+      		  screen.blit(Art.railcart2[0][1], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.RIGHT)
+      		  screen.blit(Art.railcart2[1][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.DOWN)
+      		  screen.blit(Art.railcart2[0][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		screen.blit(Art.railcart2[0][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
+        }
 
         int frame = (walkTime / 4 % 6 + 6) % 6;
 
@@ -654,6 +734,18 @@ public class Player extends Mob implements LootCollector {
 
         if (muzzleTicks > 0 && !behind) {
             screen.blit(Art.muzzle[muzzleImage][0], xmuzzle, ymuzzle);
+        }
+        
+        if (inCart()) {
+      		if (ridingCart.lDir == RailCart.Direction.LEFT)
+      			screen.blit(Art.railcart1[1][1], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.UP)
+      		  screen.blit(Art.railcart1[0][1], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.RIGHT)
+      		  screen.blit(Art.railcart1[1][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		if (ridingCart.lDir == RailCart.Direction.DOWN)
+      		  screen.blit(Art.railcart1[0][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
+      		screen.blit(Art.railcart1[0][0], ridingCart.pos.x-16, ridingCart.pos.y-10);
         }
 	}
 
@@ -860,8 +952,41 @@ public class Player extends Mob implements LootCollector {
     public Vec2 getPosition() {
         return pos;
     }
+<<<<<<< HEAD
     public void collideStairs(){
     	
+=======
+    
+    /**
+     * Glues Player to RailCart
+     * 
+     * @param cart Cart to glue Player in
+     */
+    public void joinCart(RailCart cart) {
+        ridingCart = cart;
+        ridingCart.riding = this;
+        pos.x = cart.pos.x;
+        pos.y = cart.pos.y;
+    }
+    
+    /**
+     * Ejects Player from current RailCart
+     * 
+     */
+    public void ejectCart() {
+    	  ridingCart.riding = null;
+        ridingCart = null;
+    }
+    
+    /**
+     * Checks if player is in any cart .
+     * 
+     * @return true if player is in RailCart , else false
+     * 
+     */
+    public boolean inCart() {
+        return ridingCart != null;
+>>>>>>> upstream/feature/railEntities
     }
 
 }
