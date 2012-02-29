@@ -962,7 +962,7 @@ public class MojamComponent extends Canvas implements Runnable,
 			addMenu(new GameTypeSelectMenu(GAME_WIDTH, GAME_HEIGHT));
 		} else if (id == TitleMenu.CAMPAIGN_SELECT_SCREEN) {
 			addMenu(new CampaignMenu(GAME_WIDTH, GAME_HEIGHT));
->>>>>>> upstream/campaign
+			>>>>>>> upstream/campaign
 		}
 	}
 
