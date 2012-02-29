@@ -25,15 +25,15 @@ public class Art {
 	public static Bitmap[][] wallTiles = cut("/art/map/walltiles.png", 32, 56, 0, 0);
 	public static int[][] wallTileColors = getColors(wallTiles);
 	
-	public static Bitmap[][] stairTiles = cut("/art/map/floortiles_alt.png", 32, 56, 128, 104);
+	public static Bitmap[][] stairTiles = cut("/art/map/stairtiles.png", 32, 56, 33, 0);
 	public static int[][] stairTileColors = getColors(stairTiles);
-	public static Bitmap[][] stairRightTiles = cut("/art/map/floortiles_alt.png", 32, 56, 224, 40);
+	public static Bitmap[][] stairRightTiles = cut("/art/map/stairtiles.png", 32, 56, 0, 0);
 	public static int[][] stairRightTileColors = getColors(stairRightTiles);
-	public static Bitmap[][] stairLeftTiles = cut("/art/map/floortiles_alt.png", 32, 56, 192, 40);
+	public static Bitmap[][] stairLeftTiles = cut("/art/map/stairtiles.png", 32, 56, 66, 0);
 	public static int[][] stairLeftTileColors = getColors(stairLeftTiles);
-	public static Bitmap[][] stairFloorRightTiles = cut("/art/map/floortiles_alt.png", 32, 32, 192, 0);
+	public static Bitmap[][] stairFloorRightTiles = cut("/art/map/stairtiles.png", 32, 32, 0, 128);
 	public static int[][] stairFloorRightTileColors = getColors(stairFloorRightTiles);
-	public static Bitmap[][] stairFloorLeftTiles = cut("/art/map/floortiles_alt.png", 32, 32, 224, 0);
+	public static Bitmap[][] stairFloorLeftTiles = cut("/art/map/stairtiles.png", 32, 32, 32, 128);
 	public static int[][] stairFloorLeftTileColors = getColors(stairFloorLeftTiles);
 	
 	public static Bitmap[][] treasureTiles = cut("/art/map/treasure.png", 32, 56);

@@ -31,6 +31,7 @@ import com.mojang.mojam.screen.Screen;
  * Implements the player entity
  */
 public class Player extends Mob implements LootCollector {
+	public boolean colide_with_stairs;
     public static int COST_RAIL;
     public static int COST_DROID;
     public static int COST_REMOVE_RAIL;
@@ -858,6 +859,9 @@ public class Player extends Mob implements LootCollector {
      */
     public Vec2 getPosition() {
         return pos;
+    }
+    public void collideStairs(){
+    	
     }
 
 }
