@@ -15,13 +15,7 @@ import com.mojang.mojam.level.DifficultyInformation;
 import com.mojang.mojam.level.HoleTile;
 import com.mojang.mojam.level.Level;
 import com.mojang.mojam.level.LevelInformation;
-import com.mojang.mojam.level.tile.Tile;
-import com.mojang.mojam.level.tile.DestroyableWallTile;
-import com.mojang.mojam.level.tile.FloorTile;
-import com.mojang.mojam.level.tile.SandTile;
-import com.mojang.mojam.level.tile.UnbreakableRailTile;
-import com.mojang.mojam.level.tile.UnpassableSandTile;
-import com.mojang.mojam.level.tile.WallTile;
+import com.mojang.mojam.level.tile.*;
 import com.mojang.mojam.entity.building.SpawnerEntity;
 import com.mojang.mojam.entity.loot.Loot;
 import com.mojang.mojam.entity.building.Turret;
@@ -114,6 +108,21 @@ public class GameMode {
 			break;
 		case 0xff0000:
 			newLevel.setTile(x, y, new WallTile());
+			break;
+		case 0xCC00FF:
+			newLevel.setTile(x, y, new StairTile());
+			break;
+		case 0x00ffff:
+			newLevel.setTile(x, y, new StairLeftTile());
+			break;
+		case 0x009999:
+			newLevel.setTile(x, y, new StairRightTile());
+			break;
+		case 0xff00ff:
+			newLevel.setTile(x, y, new StairFloorLeftTile());
+			break;
+		case 0xc0c0c0:
+			newLevel.setTile(x, y, new StairFloorRightTile());
 			break;
 		case 0x0000ff:
 			newLevel.addEntity(new SpikeTrap(x * Tile.WIDTH,y * Tile.HEIGHT));
