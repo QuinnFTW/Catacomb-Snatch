@@ -32,6 +32,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.mojang.mojam.campaign.CampaignMenu;
 import com.mojang.mojam.entity.Player;
 import com.mojang.mojam.entity.building.Base;
 import com.mojang.mojam.entity.mob.Team;
@@ -42,6 +43,7 @@ import com.mojang.mojam.gui.ClickableComponent;
 import com.mojang.mojam.gui.CreditsScreen;
 import com.mojang.mojam.gui.DifficultySelect;
 import com.mojang.mojam.gui.Font;
+import com.mojang.mojam.gui.GameTypeSelectMenu;
 import com.mojang.mojam.gui.GuiError;
 import com.mojang.mojam.gui.GuiMenu;
 import com.mojang.mojam.gui.HostingWaitMenu;
@@ -952,8 +954,15 @@ public class MojamComponent extends Canvas implements Runnable,
 			popMenu();
 		} else if (id == TitleMenu.CREDITS_ID) {
 			addMenu(new CreditsScreen(GAME_WIDTH, GAME_HEIGHT));
+<<<<<<< HEAD
 		} else if (id == TitleMenu.CHARACTER_ID) {
 			addMenu(new CharacterSelectionMenu());
+=======
+		} else if (id == TitleMenu.GAME_TYPE_SELECT_ID) {
+			addMenu(new GameTypeSelectMenu(GAME_WIDTH, GAME_HEIGHT));
+		} else if (id == TitleMenu.CAMPAIGN_SELECT_SCREEN) {
+			addMenu(new CampaignMenu(GAME_WIDTH, GAME_HEIGHT));
+>>>>>>> upstream/campaign
 		}
 	}
 

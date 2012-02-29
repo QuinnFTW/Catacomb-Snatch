@@ -178,8 +178,13 @@ public class GameMode {
 		newLevel.addEntity(new ShopItem(32 * (newLevel.width / 2 + .5), (newLevel.height - 4.5) * 32,
 				ShopItem.SHOP_BOMB, Team.Team1));
 		
+<<<<<<< HEAD
 		newLevel.setTile((newLevel.width / 2) - 1, 7, new UnbreakableRailTile(new SandTile()));	
 	    newLevel.setTile((newLevel.width / 2) - 1, newLevel.height - 8, new UnbreakableRailTile(new SandTile()));
+=======
+		newLevel.setTile((newLevel.width / 2) - 1, 7, new UnbreakableRailTile(new SandTile()));
+		newLevel.setTile((newLevel.width / 2) - 1, newLevel.height - 8, new UnbreakableRailTile(new SandTile()));
+>>>>>>> upstream/campaign
 	}
 	
 	protected void setTickItems() {
