@@ -6,7 +6,6 @@ import com.mojang.mojam.MojamComponent;
 import com.mojang.mojam.level.DifficultyInformation;
 import com.mojang.mojam.level.LevelInformation;
 import com.mojang.mojam.level.gamemode.GameMode;
-import com.mojang.mojam.level.gamemode.GameModeEventsTest;
 import com.mojang.mojam.level.gamemode.GameModeVanilla;
 import com.mojang.mojam.screen.Art;
 import com.mojang.mojam.screen.Screen;
@@ -66,15 +65,8 @@ public class TitleMenu extends GuiMenu {
 	public static final int CHARACTER_ID = 5000;
 	public static final int CHARACTER_BUTTON_ID = 5001;
 	
-	public static final int GAME_TYPE_SELECT_ID = 5000;
-	public static final int GAME_TYPE_SELECT_CAMPAIGN = 5001;
-	public static final int GAME_TYPE_ARCADE = 5002;
-	public static final int GAME_TYPE_CREATIVE = 5003;
-	
-	public static final int CAMPAIGN_SELECT_SCREEN = 7000;
-	
 	public static LevelInformation level = null;
-	public static GameMode defaultGameMode= new GameModeEventsTest();
+	public static GameMode defaultGameMode= new GameModeVanilla();
 	public static DifficultyInformation difficulty = null;
 
 	public static String ip = "";
@@ -85,7 +77,7 @@ public class TitleMenu extends GuiMenu {
 		super();
 		this.gameWidth = gameWidth;
 		int startY = 140;
-		addButton(new Button(GAME_TYPE_SELECT_ID, MojamComponent.texts.getStatic("titlemenu.start"),
+		addButton(new Button(SELECT_LEVEL_ID, MojamComponent.texts.getStatic("titlemenu.start"),
 				(gameWidth - 128) / 2, (startY += 30)));
 		addButton(new Button(SELECT_HOST_LEVEL_ID,
 				MojamComponent.texts.getStatic("titlemenu.host"), (gameWidth - 128) / 2,

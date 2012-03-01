@@ -13,7 +13,7 @@ import com.mojang.mojam.MojamComponent;
  * Art management class
  */
 public class Art {
-	
+	//Characters
 	public static final int NO_OPPONENT = -1;
 	public static final int LORD_LARD = 0;
 	public static final int HERR_VON_SPECK = 1;
@@ -21,11 +21,7 @@ public class Art {
 	public static final int COUNTESS_CRULLER = 3;
 	public static final int NUM_CHARACTERS = 4;
 	
-	public static Bitmap[][] floorTiles = cut("/art/map/floortiles.png", 32, 32);
-	public static int[][] floorTileColors = getColors(floorTiles);
-	public static Bitmap[][] wallTiles = cut("/art/map/walltiles.png", 32, 56, 0, 0);
-	public static int[][] wallTileColors = getColors(wallTiles);
-	
+	//Stair Tiles
 	public static Bitmap[][] stairTiles = cut("/art/map/stairtiles.png", 32, 56, 33, 0);
 	public static int[][] stairTileColors = getColors(stairTiles);
 	public static Bitmap[][] stairRightTiles = cut("/art/map/stairtiles.png", 32, 56, 0, 0);
@@ -37,6 +33,11 @@ public class Art {
 	public static Bitmap[][] stairFloorLeftTiles = cut("/art/map/stairtiles.png", 32, 32, 32, 128);
 	public static int[][] stairFloorLeftTileColors = getColors(stairFloorLeftTiles);
 	
+	//Dungeon Components
+	public static Bitmap[][] floorTiles = cut("/art/map/floortiles.png", 32, 32);
+	public static int[][] floorTileColors = getColors(floorTiles);
+	public static Bitmap[][] wallTiles = cut("/art/map/walltiles.png", 32, 56, 0, 0);
+	public static int[][] wallTileColors = getColors(wallTiles);
 	public static Bitmap[][] treasureTiles = cut("/art/map/treasure.png", 32, 56);
 	public static int treasureTileColor = getColor(treasureTiles[0][0]);
 	public static Bitmap[][] mobSpawner = cut("/art/map/spawner.png", 32, 40);
@@ -131,8 +132,6 @@ public class Art {
 	public static Bitmap[][] turret2 = cut("/art/building/turret2.png", 32, 32);
 	public static Bitmap[][] turret3 = cut("/art/building/turret3.png", 32, 32);
 	public static Bitmap bomb = load("/art/building/bomb.png");
-	public static Bitmap[][] railcart1 = cut("/art/building/railcart1.png", 32, 32);
-	public static Bitmap[][] railcart2 = cut("/art/building/railcart2.png", 32, 32);
 
 	// Fonts
 	public static Bitmap[][] font_default = cut("/art/fonts/font_default.png", 8, 8);

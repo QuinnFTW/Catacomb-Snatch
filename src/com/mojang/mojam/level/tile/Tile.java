@@ -26,8 +26,8 @@ public abstract class Tile implements BBOwner, IEditable {
 		minimapColor = Art.floorTileColors[img & 7][img / 8];
 	}
 
-	public void init(Level level2, int x, int y) {
-		this.level = level2;
+	public void init(Level level, int x, int y) {
+		this.level = level;
 		this.x = x;
 		this.y = y;
 	}

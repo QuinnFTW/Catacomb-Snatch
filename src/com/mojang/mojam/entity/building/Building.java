@@ -32,7 +32,6 @@ public abstract class Building extends Mob implements IUsable {
 	public int spawnTime = 0;
 	public boolean highlight = false;
 	public Mob carriedBy = null;
-	public Mob lastCarrying = null;
 
 	protected int upgradeLevel = 0;
 	private int maxUpgradeLevel = 0;
@@ -112,7 +111,7 @@ public abstract class Building extends Mob implements IUsable {
 	 * @param mob Reference to the mob object carrying this building
 	 */
 	public void onPickup(Mob mob) {
-	    lastCarrying = carriedBy = mob;
+	    carriedBy = mob;
 	}
 	
 	/**
