@@ -5,10 +5,15 @@ import com.mojang.mojam.level.Level;
 import com.mojang.mojam.math.Facing;
 import com.mojang.mojam.network.TurnSynchronizer;
 import com.mojang.mojam.screen.Art;
+import com.mojang.mojam.screen.Bitmap;
 import com.mojang.mojam.screen.Screen;
 import com.mojang.mojam.entity.building.Harvester;
 
 public class RailTile extends Tile {
+	protected static final String NAME = "RAIL";
+
+	private static final int COLOR = -1;
+
 	Tile parent;
 
 	public int numConnections = 0;
@@ -18,6 +23,7 @@ public class RailTile extends Tile {
 
 	public RailTile(Tile parent) {
 		this.parent = parent;
+		minimapColor = Art.floorTileColors[4][1];
 	}
 
 	public void init(Level level, int x, int y) {
@@ -25,8 +31,6 @@ public class RailTile extends Tile {
 		super.init(level, x, y);
 		neighbourChanged(null);
 		parent.neighbourChanged(null);
-		// minimapColor = Art.tilesColors[tx][ty];
-		minimapColor = Art.floorTileColors[4][1];
 	}
 
 	public void render(Screen screen) {
@@ -101,4 +105,23 @@ public class RailTile extends Tile {
 		
 		return true;
 	}
+
+	public int getColor() {
+		return RailTile.COLOR;
+	}
+
+	public String getName() {
+		return RailTile.NAME;
+	}
+
+	@Override
+	public Bitmap getBitMapForEditor() {
+		return Art.rails[1][0];
+	}
+	
+	@Override
+	public int getMiniMapColor() {
+		return minimapColor;
+	}
+
 }

@@ -8,18 +8,24 @@ import java.util.Arrays;
 import javax.imageio.ImageIO;
 
 import com.mojang.mojam.MojamComponent;
+import com.mojang.mojam.entity.Entity;
 import com.mojang.mojam.entity.building.ShopItem;
-import com.mojang.mojam.entity.mob.SpawnableEnemy;
 import com.mojang.mojam.entity.mob.Team;
-import com.mojang.mojam.entity.mob.SpikeTrap;
 import com.mojang.mojam.level.DifficultyInformation;
-import com.mojang.mojam.level.HoleTile;
 import com.mojang.mojam.level.Level;
 import com.mojang.mojam.level.LevelInformation;
+<<<<<<< HEAD
 import com.mojang.mojam.level.tile.*;
 import com.mojang.mojam.entity.building.SpawnerEntity;
 import com.mojang.mojam.entity.loot.Loot;
 import com.mojang.mojam.entity.building.Turret;
+=======
+import com.mojang.mojam.level.LevelUtils;
+import com.mojang.mojam.level.tile.FloorTile;
+import com.mojang.mojam.level.tile.SandTile;
+import com.mojang.mojam.level.tile.Tile;
+import com.mojang.mojam.level.tile.UnbreakableRailTile;
+>>>>>>> upstream/master
 
 public class GameMode {
 
@@ -57,7 +63,7 @@ public class GameMode {
 		
 		for (int y = 0; y < h; y++) {
 			for (int x = 0; x < w; x++) {
-				int col = rgbs[x + y * w] & 0xffffff;
+				int col = rgbs[x + y * w] & 0xffffffff;
 				loadColorTile(col, x, y);
 			}
 		}
@@ -91,6 +97,7 @@ public class GameMode {
 	}
 	
 	protected void loadColorTile(int color, int x, int y) {
+<<<<<<< HEAD
 		switch (color) {
 		case 0xA8A800:
 			newLevel.setTile(x, y, new SandTile());
@@ -153,14 +160,25 @@ public class GameMode {
 			for (int i = 0; i < 4; i++) {
 				double dir = i * Math.PI * 2 / 8;
 				newLevel.addEntity(new Loot(x * Tile.WIDTH+Tile.WIDTH/2,y * Tile.HEIGHT+Tile.HEIGHT/2, Math.cos(dir), Math.sin(dir), 200, false));
+=======
+		
+		Tile tile = LevelUtils.getNewTileFromColor(color);
+		newLevel.setTile(x, y, tile);
+		
+		if(tile instanceof FloorTile) {
+			Entity entity = LevelUtils.getNewEntityFromColor(color,x,y);
+			if(entity != null) {
+				newLevel.addEntity(entity);
+>>>>>>> upstream/master
 			}
-			break;
-		default:
-			newLevel.setTile(x, y, new FloorTile());
-			break;
 		}
+
 	}
 	
+
+	
+
+
 	protected void setupPlayerSpawnArea() {
 		newLevel.maxMonsters = 1500 + (int)DifficultyInformation.calculateStrength(500);	
 		
